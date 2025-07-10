@@ -83,30 +83,15 @@ pipeline.  Swap in your PPO policy to gather higher-quality data and finetune.
   interface.
 * Experiment with larger UVA checkpoints or tasks beyond PushT. 
 
----
+## Joint Finetuning Mode
 
-## 5. Joint PPO + World-Model Finetuning (DayDreamer-style)
+See `World-model/README.md` for instructions on **joint PPO + world-model
+finetuning**, which mirrors the online-learning pipeline popularised by
+DayDreamer but starts from a pretrained UVA model instead of training the world
+model from scratch.
 
-`joint_train.py` unifies the two loops: it alternates between
+The joint pipeline now integrates a **perfect replay buffer**:
 
-1. Collecting real-environment episodes with the current policy.
-2. Finetuning the UVA dynamic model on that data.
-3. Continuing PPO training *inside the freshly updated world model*.
-
-Example:
-
-```bash
-python World-model/joint_train.py \
-  --checkpoint checkpoints/pusht.ckpt \
-  --cycles 10 \               # repeat data-collection → finetune → PPO 10 times
-  --real_eps 5 \              # collect 5 real episodes per cycle
-  --finetune_epochs 2 \       # gradient passes on world model per cycle
-  --ppo_steps 5000            # PPO steps per cycle
-```
-
-The script saves `joint_trained_policy.zip` and `finetuned_uva_final.ckpt` when
-finished.
-
-Internally this loop uses a capacity-bounded **episode replay buffer** that
-stores up to 200 recent trajectories and samples random horizon-length chunks
-for each gradient update, mirroring DayDreamer’s perfect replay design. 
+* Keeps the most recent 200 real-environment episodes.
+* Samples random horizon-length chunks every gradient step.
+* Ensures balanced, memory-bounded training data for continuous model updating. 

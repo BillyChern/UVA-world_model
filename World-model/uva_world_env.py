@@ -30,7 +30,9 @@ class UVAWorldModelEnv(gym.Env):
 
     def __init__(
         self,
-        checkpoint_path: str,
+        checkpoint_path: str = None,
+        *,
+        policy: UnifiedVideoActionPolicy = None,
         device: str = "cuda:0",
         n_obs_steps: int = 8,
         n_action_steps: int = 8,
@@ -46,25 +48,28 @@ class UVAWorldModelEnv(gym.Env):
         self.max_episode_steps = max_episode_steps
 
         # ------------------------------------------------------------------
-        # Load pretrained model from checkpoint.
-        # We follow the logic used in unified_video_action/eval_sim.py
+        # Obtain policy (either passed in or loaded from checkpoint)
         # ------------------------------------------------------------------
-        import hydra
+        if policy is not None:
+            self.policy = policy
+        else:
+            assert (
+                checkpoint_path is not None
+            ), "Either policy or checkpoint_path must be provided."
+            import hydra
 
-        payload = torch.load(checkpoint_path, map_location="cpu")
-        cfg = payload["cfg"]
-        workspace_cls = hydra.utils.get_class(cfg.model._target_)
+            payload = torch.load(checkpoint_path, map_location="cpu")
+            cfg = payload["cfg"]
+            workspace_cls = hydra.utils.get_class(cfg.model._target_)
 
-        # Instantiate workspace in a temporary directory; we only need the policy.
-        tmp_dir = pathlib.Path("/tmp/uva_workspace").as_posix()
-        os.makedirs(tmp_dir, exist_ok=True)
-        workspace = workspace_cls(cfg, output_dir=tmp_dir)
-        workspace.load_payload(payload, exclude_keys=None, include_keys=None)
+            tmp_dir = pathlib.Path("/tmp/uva_workspace").as_posix()
+            os.makedirs(tmp_dir, exist_ok=True)
+            workspace = workspace_cls(cfg, output_dir=tmp_dir)
+            workspace.load_payload(payload)
 
-        # The EMA model is a better predictor if present.
-        self.policy: UnifiedVideoActionPolicy = (
-            workspace.ema_model if hasattr(workspace, "ema_model") else workspace.model
-        )
+            self.policy: UnifiedVideoActionPolicy = (
+                workspace.ema_model if hasattr(workspace, "ema_model") else workspace.model
+            )
         self.policy.eval()
         self.policy.to(self.device)
 
