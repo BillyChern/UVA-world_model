@@ -1,0 +1,9 @@
+torch>=2.0
+stable-baselines3>=2.2.1
+gym==0.26.2
+opencv-python
+imageio
+hydra-core
+wandb
+tqdm
+numpy 
