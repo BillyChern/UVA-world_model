@@ -6,7 +6,7 @@ import stable_baselines3 as sb3
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-from World-model.uva_world_env import UVAWorldModelEnv
+from World_model.uva_world_env import UVAWorldModelEnv
 
 
 def main():

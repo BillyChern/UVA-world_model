@@ -4,7 +4,7 @@ import numpy as np
 import stable_baselines3 as sb3
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-from World-model.real_pusht_env import RealPushTEnv
+from World_model.real_pusht_env import RealPushTEnv
 
 
 def main():

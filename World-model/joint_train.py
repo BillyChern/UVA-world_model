@@ -8,10 +8,10 @@ import tqdm
 import stable_baselines3 as sb3
 from stable_baselines3.common.vec_env import DummyVecEnv
 
-from World-model.real_pusht_env import RealPushTEnv
-from World-model.uva_world_env import UVAWorldModelEnv
-from World-model.replay_buffer import EpisodeReplayBuffer
-from unified_video_action.policy.unified_video_action_policy import UnifiedVideoActionPolicy
+from World_model.real_pusht_env import RealPushTEnv
+from World_model.uva_world_env import UVAWorldModelEnv
+from World_model.replay_buffer import EpisodeReplayBuffer
+from unified_video_action.unified_video_action.policy.unified_video_action_policy import UnifiedVideoActionPolicy
 
 
 def collect_real_episodes(env, policy, n_eps: int, horizon: int):

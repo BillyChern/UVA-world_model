@@ -10,7 +10,7 @@ from gym import spaces
 import torch
 
 # Import UVA utilities – we rely on the existing repository already in the workspace
-from unified_video_action.policy.unified_video_action_policy import (
+from unified_video_action.unified_video_action.policy.unified_video_action_policy import (
     UnifiedVideoActionPolicy,
 )
 from unified_video_action.utils.data_utils import normalize_action

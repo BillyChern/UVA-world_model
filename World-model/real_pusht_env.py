@@ -3,6 +3,20 @@ import numpy as np
 import gym
 from gym import spaces
 import cv2
+import functools
+
+# Monkeypatch cv2.drawMarker to gracefully handle numpy-int inputs (tuple conversion)
+_orig_draw_marker = cv2.drawMarker
+
+def _safe_draw_marker(img, position, *args, **kwargs):
+    if not isinstance(position, tuple):
+        try:
+            position = tuple(int(x) for x in position)
+        except Exception:
+            position = (0, 0)
+    return _orig_draw_marker(img, position, *args, **kwargs)
+
+cv2.drawMarker = _safe_draw_marker
 
 from unified_video_action.env.pusht.pusht_image_env import PushTImageEnv
 from unified_video_action.gym_util.multistep_wrapper import MultiStepWrapper

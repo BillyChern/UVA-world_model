@@ -8,10 +8,10 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 import tqdm
 
-from unified_video_action.policy.unified_video_action_policy import (
+from unified_video_action.unified_video_action.policy.unified_video_action_policy import (
     UnifiedVideoActionPolicy,
 )
-from World-model.real_pusht_env import RealPushTEnv
+from World_model.real_pusht_env import RealPushTEnv
 
 # -----------------------------------------------------------------------------
 # Simple in-memory dataset to hold (obs_seq, action_seq)
